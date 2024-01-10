@@ -37,4 +37,12 @@ export class PrismaSupplierRepository implements SupplierRepository {
       data: supplierPrisma,
     });
   }
+
+  async remove(supplierId: string): Promise<void> {
+    await this.prisma.supplier.delete({
+      where: {
+        id: supplierId,
+      },
+    });
+  }
 }
