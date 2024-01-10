@@ -45,4 +45,9 @@ export class PrismaSupplierRepository implements SupplierRepository {
       },
     });
   }
+
+  async getAll(): Promise<Supplier[]> {
+    const suppliers = await this.prisma.supplier.findMany();
+    return suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
+  }
 }
