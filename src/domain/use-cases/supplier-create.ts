@@ -10,7 +10,7 @@ interface Request {
 type Response = void;
 
 @Injectable()
-export class CreateSupplier {
+export class SupplierCreate {
   constructor(private supplierRepository: SupplierRepository) {}
 
   async execute(req: Request): Promise<Response> {
