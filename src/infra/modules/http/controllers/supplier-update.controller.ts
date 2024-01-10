@@ -1,4 +1,4 @@
-import { Controller, Body, Put } from '@nestjs/common';
+import { Controller, Body, Put, Param } from '@nestjs/common';
 
 import { SupplierUpdate } from '@domain/use-cases/supplier-update';
 
@@ -8,9 +8,12 @@ import { SupplierUpdateDTO } from '../dtos/supplier-update.dto';
 export class SupplierUpdateController {
   constructor(private supplierUpdate: SupplierUpdate) {}
 
-  @Put()
-  async handle(@Body() body: SupplierUpdateDTO) {
-    const { supplierId, name } = body;
+  @Put(':id')
+  async handle(
+    @Body() body: SupplierUpdateDTO,
+    @Param('id') supplierId: string,
+  ) {
+    const { name } = body;
 
     await this.supplierUpdate.execute({
       supplierId,
