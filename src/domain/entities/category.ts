@@ -8,4 +8,7 @@ export class Category extends Entity<CategoryProps> {
   get name() {
     return this.props.name;
   }
+  set name(name: string) {
+    this.props.name = name;
+  }
 }
