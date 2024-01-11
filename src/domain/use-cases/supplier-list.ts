@@ -8,7 +8,7 @@ interface Response {
 }
 
 @Injectable()
-export class SupplierUpdate {
+export class SupplierList {
   constructor(private supplierRepository: SupplierRepository) {}
 
   async execute(): Promise<Response> {
