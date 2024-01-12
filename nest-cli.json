@@ -9,7 +9,12 @@
         "name": "@nestjs/swagger",
         "options": {
           "introspectComments": true,
-          "dtoFileNameSuffix": [".dto.ts", ".entity.ts", ".presenter.ts"]
+          "dtoFileNameSuffix": [
+            ".dto.ts",
+            ".entity.ts",
+            ".presenter.ts",
+            ".query.ts"
+          ]
         }
       }
     ]

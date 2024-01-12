@@ -9,9 +9,9 @@ import { PrismaProductMapper } from '../mappers/prisma-product-mapper';
 export class PrismaProductRepository implements ProductRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(product: Product): Promise<void> {
-    const productPrisma = PrismaProductMapper.toPrisma(product);
-    await this.prisma.product.create({ data: productPrisma });
+  async createMany(products: Product[]): Promise<void> {
+    const productsPrisma = products.map(PrismaProductMapper.toPrisma);
+    await this.prisma.product.createMany({ data: productsPrisma });
   }
 
   async getById(id: string): Promise<Product | null> {

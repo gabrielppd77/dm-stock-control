@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { UniqueEntityID } from '@core/common/entities/unique-entity-id';
 
@@ -6,17 +6,20 @@ import { Product } from '@domain/entities/product';
 import { ProductRepository } from '@domain/repositories/product.repository';
 
 interface Request {
-  supplierId: string;
-  categoryId: string;
-  name: string;
-  color?: string;
-  fabric?: string;
-  measure?: string;
-  dtEntry?: string;
-  dtDeparture?: string;
-  nrClient?: string;
-  fiscalNoteEntry?: string;
-  fiscalNoteDeparture?: string;
+  replicate: number;
+  fields: {
+    supplierId: string;
+    categoryId: string;
+    name: string;
+    color?: string;
+    fabric?: string;
+    measure?: string;
+    dtEntry?: string;
+    dtDeparture?: string;
+    nrClient?: string;
+    fiscalNoteEntry?: string;
+    fiscalNoteDeparture?: string;
+  };
 }
 
 type Response = void;
@@ -26,6 +29,7 @@ export class ProductCreate {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
+    const { replicate, fields } = req;
     const {
       supplierId,
       categoryId,
@@ -38,22 +42,34 @@ export class ProductCreate {
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
-    } = req;
+    } = fields;
 
-    const product = new Product({
-      supplierId: new UniqueEntityID(supplierId),
-      categoryId: new UniqueEntityID(categoryId),
-      name,
-      color,
-      fabric,
-      measure,
-      dtEntry,
-      dtDeparture,
-      nrClient,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-    });
+    if (replicate > 100) {
+      throw new BadRequestException(
+        'The number of replications exceeds 100, please report less',
+      );
+    }
 
-    await this.productRepository.create(product);
+    const products: Product[] = [];
+
+    for (let index = 0; index < replicate; index++) {
+      products.push(
+        new Product({
+          supplierId: new UniqueEntityID(supplierId),
+          categoryId: new UniqueEntityID(categoryId),
+          name,
+          color,
+          fabric,
+          measure,
+          dtEntry,
+          dtDeparture,
+          nrClient,
+          fiscalNoteEntry,
+          fiscalNoteDeparture,
+        }),
+      );
+    }
+
+    await this.productRepository.createMany(products);
   }
 }
