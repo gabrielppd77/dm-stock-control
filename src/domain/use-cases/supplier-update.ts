@@ -4,7 +4,9 @@ import { SupplierRepository } from '@domain/repositories/supplier.repository';
 
 interface Request {
   supplierId: string;
-  name: string;
+  fields: {
+    name: string;
+  };
 }
 
 type Response = void;
@@ -14,7 +16,7 @@ export class SupplierUpdate {
   constructor(private supplierRepository: SupplierRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { supplierId, name } = req;
+    const { supplierId, fields } = req;
 
     const supplierToUpdate = await this.supplierRepository.getById(supplierId);
 
@@ -22,7 +24,7 @@ export class SupplierUpdate {
       throw new NotFoundException();
     }
 
-    supplierToUpdate.name = name;
+    supplierToUpdate.name = fields.name;
 
     await this.supplierRepository.update(supplierId, supplierToUpdate);
   }

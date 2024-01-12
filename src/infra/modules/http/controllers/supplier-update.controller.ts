@@ -17,7 +17,7 @@ export class SupplierUpdateController {
 
     await this.supplierUpdate.execute({
       supplierId,
-      name,
+      fields: { name },
     });
   }
 }

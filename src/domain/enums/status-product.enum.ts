@@ -1,4 +1,4 @@
-enum StatusProduct {
+export enum StatusProductEnum {
   AVAILABLE,
   SEPARATION,
   PREPARING,

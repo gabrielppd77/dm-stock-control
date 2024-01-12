@@ -12,6 +12,11 @@ import { CategoryUpdateController } from './controllers/category-update.controll
 import { CategoryRemoveController } from './controllers/category-remove.controller';
 import { CategoryListController } from './controllers/category-list.controller';
 
+import { ProductCreateController } from './controllers/product-create.controller';
+import { ProductUpdateController } from './controllers/product-update.controller';
+import { ProductRemoveController } from './controllers/product-remove.controller';
+import { ProductListController } from './controllers/product-list.controller';
+
 import { SupplierCreate } from '@domain/use-cases/supplier-create';
 import { SupplierUpdate } from '@domain/use-cases/supplier-update';
 import { SupplierRemove } from '@domain/use-cases/supplier-remove';
@@ -21,6 +26,11 @@ import { CategoryCreate } from '@domain/use-cases/category-create';
 import { CategoryUpdate } from '@domain/use-cases/category-update';
 import { CategoryRemove } from '@domain/use-cases/category-remove';
 import { CategoryList } from '@domain/use-cases/category-list';
+
+import { ProductCreate } from '@domain/use-cases/product-create';
+import { ProductUpdate } from '@domain/use-cases/product-update';
+import { ProductRemove } from '@domain/use-cases/product-remove';
+import { ProductList } from '@domain/use-cases/product-list';
 
 @Module({
   imports: [DatabaseModule],
@@ -34,6 +44,11 @@ import { CategoryList } from '@domain/use-cases/category-list';
     CategoryUpdateController,
     CategoryRemoveController,
     CategoryListController,
+
+    ProductCreateController,
+    ProductUpdateController,
+    ProductRemoveController,
+    ProductListController,
   ],
   providers: [
     SupplierCreate,
@@ -45,6 +60,11 @@ import { CategoryList } from '@domain/use-cases/category-list';
     CategoryUpdate,
     CategoryRemove,
     CategoryList,
+
+    ProductCreate,
+    ProductUpdate,
+    ProductRemove,
+    ProductList,
   ],
 })
 export class HttpModule {}

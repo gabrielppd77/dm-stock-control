@@ -17,7 +17,7 @@ export class CategoryUpdateController {
 
     await this.categoryUpdate.execute({
       categoryId,
-      name,
+      fields: { name },
     });
   }
 }

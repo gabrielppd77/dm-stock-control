@@ -30,13 +30,6 @@ model Category {
   @@map("categories")
 }
 
-enum StatusProduct {
-  AVAILABLE
-  SEPARATION
-  PREPARING
-  SENT
-}
-
 model Product {
   id String @id
 
@@ -52,7 +45,7 @@ model Product {
   nrClient            String?
   fiscalNoteEntry     String?
   fiscalNoteDeparture String?
-  status              StatusProduct? @default(AVAILABLE)
+  status              Int
 
   supplier Supplier @relation(fields: [supplierId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])

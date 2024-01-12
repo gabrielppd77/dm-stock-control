@@ -4,7 +4,9 @@ import { CategoryRepository } from '@domain/repositories/category.repository';
 
 interface Request {
   categoryId: string;
-  name: string;
+  fields: {
+    name: string;
+  };
 }
 
 type Response = void;
@@ -14,7 +16,7 @@ export class CategoryUpdate {
   constructor(private categoryRepository: CategoryRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { categoryId, name } = req;
+    const { categoryId, fields } = req;
 
     const categoryToUpdate = await this.categoryRepository.getById(categoryId);
 
@@ -22,7 +24,7 @@ export class CategoryUpdate {
       throw new NotFoundException();
     }
 
-    categoryToUpdate.name = name;
+    categoryToUpdate.name = fields.name;
 
     await this.categoryRepository.update(categoryId, categoryToUpdate);
   }
