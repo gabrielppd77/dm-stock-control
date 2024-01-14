@@ -5,5 +5,16 @@ export abstract class ProductRepository {
   abstract getById(id: string): Promise<Product | null>;
   abstract update(productId: string, productUpdated: Product): Promise<void>;
   abstract remove(productId: string): Promise<void>;
-  abstract getAll(): Promise<Product[]>;
+  abstract getAll(filters: {
+    supplierId?: string;
+    categoryId?: string;
+    dtEntryFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
+    dtDepartureFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
+  }): Promise<Product[]>;
 }

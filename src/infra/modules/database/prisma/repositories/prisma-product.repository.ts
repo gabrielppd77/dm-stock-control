@@ -46,8 +46,32 @@ export class PrismaProductRepository implements ProductRepository {
     });
   }
 
-  async getAll(): Promise<Product[]> {
-    const products = await this.prisma.product.findMany();
+  async getAll(filters: {
+    supplierId?: string | undefined;
+    categoryId?: string | undefined;
+    dtEntryFilter?: { dtInitial: string; dtEnd: string } | undefined;
+    dtDepartureFilter?: { dtInitial: string; dtEnd: string } | undefined;
+  }): Promise<Product[]> {
+    const { supplierId, categoryId, dtEntryFilter, dtDepartureFilter } =
+      filters;
+    const products = await this.prisma.product.findMany({
+      where: {
+        supplierId,
+        categoryId,
+        dtEntry: dtEntryFilter
+          ? {
+              gte: new Date(dtEntryFilter.dtInitial),
+              lte: new Date(dtEntryFilter.dtEnd),
+            }
+          : undefined,
+        dtDeparture: dtDepartureFilter
+          ? {
+              gte: new Date(dtDepartureFilter.dtInitial),
+              lte: new Date(dtDepartureFilter.dtEnd),
+            }
+          : undefined,
+      },
+    });
     return products.map((d) => PrismaProductMapper.toDomain(d));
   }
 }
