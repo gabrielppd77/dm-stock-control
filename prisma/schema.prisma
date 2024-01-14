@@ -13,7 +13,9 @@ datasource db {
 model Supplier {
   id String @id
 
-  name String
+  name      String
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   Product Product[]
 
@@ -23,7 +25,9 @@ model Supplier {
 model Category {
   id String @id
 
-  name String
+  name      String
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   Product Product[]
 
@@ -46,6 +50,8 @@ model Product {
   fiscalNoteEntry     String?
   fiscalNoteDeparture String?
   status              Int
+  createdAt           DateTime? @default(now())
+  updatedAt           DateTime? @updatedAt
 
   supplier Supplier @relation(fields: [supplierId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
