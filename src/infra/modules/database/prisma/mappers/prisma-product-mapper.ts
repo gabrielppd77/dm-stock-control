@@ -18,8 +18,6 @@ export class PrismaProductMapper {
       fiscalNoteEntry: product.fiscalNoteEntry || null,
       fiscalNoteDeparture: product.fiscalNoteDeparture || null,
       status: product.status,
-      createdAt: new Date(product.createdAt),
-      updatedAt: new Date(product.updatedAt),
     };
   }
   static toDomain(productPrisma: ProductPrisma): Product {
@@ -37,8 +35,6 @@ export class PrismaProductMapper {
         fiscalNoteEntry: productPrisma.fiscalNoteEntry || undefined,
         fiscalNoteDeparture: productPrisma.fiscalNoteDeparture || undefined,
         status: productPrisma.status,
-        createdAt: productPrisma.createdAt?.toISOString() || undefined,
-        updatedAt: productPrisma.updatedAt?.toISOString() || undefined,
       },
       productPrisma.id,
     );

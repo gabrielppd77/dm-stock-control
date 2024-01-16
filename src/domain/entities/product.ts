@@ -2,11 +2,8 @@ import { Entity } from '@core/common/entities/entity';
 import { UniqueEntityID } from '@core/common/entities/unique-entity-id';
 import { StatusProductEnum } from '@domain/enums/status-product.enum';
 
-interface ProductPropsOverride
-  extends Omit<ProductProps, 'status' | 'createdAt' | 'updatedAt'> {
+interface ProductPropsOverride extends Omit<ProductProps, 'status'> {
   status?: StatusProductEnum;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 interface ProductProps {
@@ -23,9 +20,6 @@ interface ProductProps {
   fiscalNoteEntry?: string;
   fiscalNoteDeparture?: string;
   status: StatusProductEnum;
-
-  createdAt: string;
-  updatedAt: string;
 }
 
 export class Product extends Entity<ProductProps> {
@@ -34,8 +28,6 @@ export class Product extends Entity<ProductProps> {
       {
         ...props,
         status: props.status || StatusProductEnum.AVAILABLE,
-        createdAt: props.createdAt ? props.createdAt : new Date().toISOString(),
-        updatedAt: props.updatedAt ? props.updatedAt : new Date().toISOString(),
       },
       id,
     );
@@ -123,13 +115,5 @@ export class Product extends Entity<ProductProps> {
   }
   set status(status: StatusProductEnum) {
     this.props.status = status;
-  }
-
-  get createdAt() {
-    return this.props.createdAt;
-  }
-
-  get updatedAt() {
-    return this.props.createdAt;
   }
 }
