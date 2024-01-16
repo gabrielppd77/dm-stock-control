@@ -11,6 +11,10 @@ interface Request {
     dtEntryEnd?: string;
     dtDepartureInitial?: string;
     dtDepartureEnd?: string;
+    isOnlyAvaiables?: boolean;
+    nrClient?: string;
+    fiscalNoteEntry?: string;
+    fiscalNoteDeparture?: string;
   };
 }
 
@@ -31,6 +35,10 @@ export class ProductList {
       dtEntryEnd,
       dtDepartureInitial,
       dtDepartureEnd,
+      isOnlyAvaiables = true,
+      nrClient,
+      fiscalNoteEntry,
+      fiscalNoteDeparture,
     } = filters;
 
     if ((dtEntryInitial && !dtEntryEnd) || (!dtEntryInitial && dtEntryEnd)) {
@@ -58,6 +66,10 @@ export class ProductList {
       categoryId,
       dtEntryFilter,
       dtDepartureFilter,
+      isOnlyAvaiables,
+      nrClient,
+      fiscalNoteEntry,
+      fiscalNoteDeparture,
     });
     return { products };
   }

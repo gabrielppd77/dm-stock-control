@@ -13,24 +13,8 @@ export class ProductListController {
   async handle(
     @Query() queries: ProductListQuery,
   ): Promise<ProductPresenter[]> {
-    const {
-      supplierId,
-      categoryId,
-      dtEntryInitial,
-      dtEntryEnd,
-      dtDepartureInitial,
-      dtDepartureEnd,
-    } = queries;
-
     const { products } = await this.productList.execute({
-      filters: {
-        supplierId,
-        categoryId,
-        dtEntryInitial,
-        dtEntryEnd,
-        dtDepartureInitial,
-        dtDepartureEnd,
-      },
+      filters: queries,
     });
 
     const productsFormated = products.map<ProductPresenter>(

@@ -16,5 +16,9 @@ export abstract class ProductRepository {
       dtInitial: string;
       dtEnd: string;
     };
+    isOnlyAvaiables: boolean;
+    nrClient?: string;
+    fiscalNoteEntry?: string;
+    fiscalNoteDeparture?: string;
   }): Promise<Product[]>;
 }

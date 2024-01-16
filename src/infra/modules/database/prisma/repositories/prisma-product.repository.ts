@@ -51,9 +51,22 @@ export class PrismaProductRepository implements ProductRepository {
     categoryId?: string | undefined;
     dtEntryFilter?: { dtInitial: string; dtEnd: string } | undefined;
     dtDepartureFilter?: { dtInitial: string; dtEnd: string } | undefined;
+    isOnlyAvaiables: boolean;
+    nrClient?: string;
+    fiscalNoteEntry?: string;
+    fiscalNoteDeparture?: string;
   }): Promise<Product[]> {
-    const { supplierId, categoryId, dtEntryFilter, dtDepartureFilter } =
-      filters;
+    const {
+      supplierId,
+      categoryId,
+      dtEntryFilter,
+      dtDepartureFilter,
+      isOnlyAvaiables,
+      nrClient,
+      fiscalNoteEntry,
+      fiscalNoteDeparture,
+    } = filters;
+
     const products = await this.prisma.product.findMany({
       where: {
         supplierId,
@@ -70,6 +83,13 @@ export class PrismaProductRepository implements ProductRepository {
               lte: new Date(dtDepartureFilter.dtEnd),
             }
           : undefined,
+        nrClient: isOnlyAvaiables ? null : { not: null, contains: nrClient },
+        fiscalNoteEntry: {
+          contains: fiscalNoteEntry,
+        },
+        fiscalNoteDeparture: {
+          contains: fiscalNoteDeparture,
+        },
       },
     });
     return products.map((d) => PrismaProductMapper.toDomain(d));
