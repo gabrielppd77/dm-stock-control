@@ -35,7 +35,7 @@ export class ProductListQuery {
   @IsBoolean()
   @IsOptional()
   @Transform(({ value }) => value === 'true')
-  isOnlyAvaiables?: boolean;
+  isOnlyAvaiables?: boolean = true;
 
   @IsOptional()
   @IsString()

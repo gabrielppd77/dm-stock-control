@@ -35,7 +35,7 @@ export class ProductList {
       dtEntryEnd,
       dtDepartureInitial,
       dtDepartureEnd,
-      isOnlyAvaiables = true,
+      isOnlyAvaiables,
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,

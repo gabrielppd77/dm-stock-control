@@ -51,7 +51,7 @@ export class PrismaProductRepository implements ProductRepository {
     categoryId?: string | undefined;
     dtEntryFilter?: { dtInitial: string; dtEnd: string } | undefined;
     dtDepartureFilter?: { dtInitial: string; dtEnd: string } | undefined;
-    isOnlyAvaiables: boolean;
+    isOnlyAvaiables?: boolean;
     nrClient?: string;
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
