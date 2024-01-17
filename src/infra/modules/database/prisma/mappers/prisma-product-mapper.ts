@@ -1,6 +1,12 @@
 import { UniqueEntityID } from '@core/common/entities/unique-entity-id';
 import { Product } from '@domain/entities/product';
-import { Product as ProductPrisma } from '@prisma/client';
+import { Product as ProductPrisma, Prisma } from '@prisma/client';
+import { PrismaSupplierMapper } from './prisma-supplier-mapper';
+import { PrismaCategoryMapper } from './prisma-category-mapper';
+
+type ProductWithIncludes = Prisma.ProductGetPayload<{
+  include: { category: true; supplier: true };
+}>;
 
 export class PrismaProductMapper {
   static toPrisma(product: Product): ProductPrisma {
@@ -35,6 +41,28 @@ export class PrismaProductMapper {
         fiscalNoteEntry: productPrisma.fiscalNoteEntry || undefined,
         fiscalNoteDeparture: productPrisma.fiscalNoteDeparture || undefined,
         status: productPrisma.status,
+      },
+      productPrisma.id,
+    );
+  }
+
+  static toDomainWithIncludes(productPrisma: ProductWithIncludes): Product {
+    return new Product(
+      {
+        supplierId: new UniqueEntityID(productPrisma.supplierId),
+        categoryId: new UniqueEntityID(productPrisma.categoryId),
+        name: productPrisma.name,
+        color: productPrisma.color || undefined,
+        fabric: productPrisma.fabric || undefined,
+        measure: productPrisma.measure || undefined,
+        dtEntry: productPrisma.dtEntry?.toISOString() || undefined,
+        dtDeparture: productPrisma.dtDeparture?.toISOString() || undefined,
+        nrClient: productPrisma.nrClient || undefined,
+        fiscalNoteEntry: productPrisma.fiscalNoteEntry || undefined,
+        fiscalNoteDeparture: productPrisma.fiscalNoteDeparture || undefined,
+        status: productPrisma.status,
+        supplier: PrismaSupplierMapper.toDomain(productPrisma.supplier),
+        category: PrismaCategoryMapper.toDomain(productPrisma.category),
       },
       productPrisma.id,
     );

@@ -4,6 +4,8 @@ import { StatusProductEnum } from '@domain/enums/status-product.enum';
 export class ProductAvailablesPresenter {
   id: string;
   name: string;
+  supplierName: string;
+  categoryName: string;
   color?: string;
   fabric?: string;
   measure?: string;
@@ -16,6 +18,8 @@ export class ProductAvailablesPresenter {
   constructor(product: Product) {
     this.id = product.id.toValue();
     this.name = product.name;
+    this.supplierName = product.supplier?.name || 'supplier';
+    this.categoryName = product.category?.name || 'category';
     this.color = product.color;
     this.fabric = product.fabric;
     this.measure = product.measure;

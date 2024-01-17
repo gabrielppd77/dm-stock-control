@@ -93,8 +93,12 @@ export class PrismaProductRepository implements ProductRepository {
           contains: fiscalNoteDeparture,
         },
       },
+      include: {
+        supplier: true,
+        category: true,
+      },
     });
-    return products.map((d) => PrismaProductMapper.toDomain(d));
+    return products.map((d) => PrismaProductMapper.toDomainWithIncludes(d));
   }
 
   async getAllUnavailables(filters: {
@@ -146,7 +150,11 @@ export class PrismaProductRepository implements ProductRepository {
           contains: fiscalNoteDeparture,
         },
       },
+      include: {
+        supplier: true,
+        category: true,
+      },
     });
-    return products.map((d) => PrismaProductMapper.toDomain(d));
+    return products.map((d) => PrismaProductMapper.toDomainWithIncludes(d));
   }
 }

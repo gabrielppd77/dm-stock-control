@@ -2,6 +2,9 @@ import { Entity } from '@core/common/entities/entity';
 import { UniqueEntityID } from '@core/common/entities/unique-entity-id';
 import { StatusProductEnum } from '@domain/enums/status-product.enum';
 
+import { Supplier } from './supplier';
+import { Category } from './category';
+
 interface ProductPropsOverride extends Omit<ProductProps, 'status'> {
   status?: StatusProductEnum;
 }
@@ -20,6 +23,9 @@ interface ProductProps {
   fiscalNoteEntry?: string;
   fiscalNoteDeparture?: string;
   status: StatusProductEnum;
+
+  supplier?: Supplier | null;
+  category?: Category | null;
 }
 
 export class Product extends Entity<ProductProps> {
@@ -115,5 +121,13 @@ export class Product extends Entity<ProductProps> {
   }
   set status(status: StatusProductEnum) {
     this.props.status = status;
+  }
+
+  get supplier() {
+    return this.props.supplier;
+  }
+
+  get category() {
+    return this.props.category;
   }
 }
