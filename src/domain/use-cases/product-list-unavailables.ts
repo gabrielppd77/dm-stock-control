@@ -11,7 +11,6 @@ interface Request {
     dtEntryEnd?: string;
     dtDepartureInitial?: string;
     dtDepartureEnd?: string;
-    isOnlyAvaiables?: boolean;
     nrClient?: string;
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
@@ -23,7 +22,7 @@ interface Response {
 }
 
 @Injectable()
-export class ProductList {
+export class ProductListUnavailables {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
@@ -35,7 +34,6 @@ export class ProductList {
       dtEntryEnd,
       dtDepartureInitial,
       dtDepartureEnd,
-      isOnlyAvaiables,
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
@@ -61,12 +59,11 @@ export class ProductList {
         ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
         : undefined;
 
-    const products = await this.productRepository.getAll({
+    const products = await this.productRepository.getAllUnavailables({
       supplierId,
       categoryId,
       dtEntryFilter,
       dtDepartureFilter,
-      isOnlyAvaiables,
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,

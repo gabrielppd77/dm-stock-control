@@ -46,13 +46,17 @@ export class PrismaProductRepository implements ProductRepository {
     });
   }
 
-  async getAll(filters: {
-    supplierId?: string | undefined;
-    categoryId?: string | undefined;
-    dtEntryFilter?: { dtInitial: string; dtEnd: string } | undefined;
-    dtDepartureFilter?: { dtInitial: string; dtEnd: string } | undefined;
-    isOnlyAvaiables?: boolean;
-    nrClient?: string;
+  async getAllAvailables(filters: {
+    supplierId?: string;
+    categoryId?: string;
+    dtEntryFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
+    dtDepartureFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
   }): Promise<Product[]> {
@@ -61,7 +65,58 @@ export class PrismaProductRepository implements ProductRepository {
       categoryId,
       dtEntryFilter,
       dtDepartureFilter,
-      isOnlyAvaiables,
+      fiscalNoteEntry,
+      fiscalNoteDeparture,
+    } = filters;
+
+    const products = await this.prisma.product.findMany({
+      where: {
+        supplierId,
+        categoryId,
+        dtEntry: dtEntryFilter
+          ? {
+              gte: new Date(dtEntryFilter.dtInitial),
+              lte: new Date(dtEntryFilter.dtEnd),
+            }
+          : undefined,
+        dtDeparture: dtDepartureFilter
+          ? {
+              gte: new Date(dtDepartureFilter.dtInitial),
+              lte: new Date(dtDepartureFilter.dtEnd),
+            }
+          : undefined,
+        nrClient: null,
+        fiscalNoteEntry: {
+          contains: fiscalNoteEntry,
+        },
+        fiscalNoteDeparture: {
+          contains: fiscalNoteDeparture,
+        },
+      },
+    });
+    return products.map((d) => PrismaProductMapper.toDomain(d));
+  }
+
+  async getAllUnavailables(filters: {
+    supplierId?: string;
+    categoryId?: string;
+    dtEntryFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
+    dtDepartureFilter?: {
+      dtInitial: string;
+      dtEnd: string;
+    };
+    fiscalNoteEntry?: string;
+    fiscalNoteDeparture?: string;
+    nrClient?: string;
+  }): Promise<Product[]> {
+    const {
+      supplierId,
+      categoryId,
+      dtEntryFilter,
+      dtDepartureFilter,
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
@@ -83,7 +138,7 @@ export class PrismaProductRepository implements ProductRepository {
               lte: new Date(dtDepartureFilter.dtEnd),
             }
           : undefined,
-        nrClient: isOnlyAvaiables ? null : { not: null, contains: nrClient },
+        nrClient: { not: null, contains: nrClient },
         fiscalNoteEntry: {
           contains: fiscalNoteEntry,
         },
