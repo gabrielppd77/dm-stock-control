@@ -1,8 +1,13 @@
 import { Product } from '@domain/entities/product';
-import { StatusProductEnum } from '@domain/enums/status-product.enum';
+import {
+  StatusProductEnum,
+  StatusProductLabels,
+} from '@domain/enums/status-product.enum';
 
 export class ProductAvailablesPresenter {
   id: string;
+  supplierId: string;
+  categoryId: string;
   name: string;
   supplierName: string;
   categoryName: string;
@@ -14,9 +19,12 @@ export class ProductAvailablesPresenter {
   fiscalNoteEntry?: string;
   fiscalNoteDeparture?: string;
   status: StatusProductEnum;
+  statusName: string;
 
   constructor(product: Product) {
     this.id = product.id.toValue();
+    this.supplierId = product.supplierId.toValue();
+    this.categoryId = product.categoryId.toValue();
     this.name = product.name;
     this.supplierName = product.supplier?.name || 'supplier';
     this.categoryName = product.category?.name || 'category';
@@ -28,5 +36,6 @@ export class ProductAvailablesPresenter {
     this.fiscalNoteEntry = product.fiscalNoteEntry;
     this.fiscalNoteDeparture = product.fiscalNoteDeparture;
     this.status = product.status;
+    this.statusName = StatusProductLabels[product.status];
   }
 }
