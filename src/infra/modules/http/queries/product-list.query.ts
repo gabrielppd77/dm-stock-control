@@ -1,6 +1,13 @@
-import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
-export class ProductListUnavailablesQuery {
+export class ProductListQuery {
   @IsUUID()
   @IsOptional()
   supplierId?: string;
@@ -36,4 +43,9 @@ export class ProductListUnavailablesQuery {
   @IsOptional()
   @IsString()
   fiscalNoteDeparture?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  onlyUnavaibles?: boolean;
 }

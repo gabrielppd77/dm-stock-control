@@ -15,8 +15,7 @@ import { CategoryListController } from './controllers/category-list.controller';
 import { ProductCreateController } from './controllers/product-create.controller';
 import { ProductUpdateController } from './controllers/product-update.controller';
 import { ProductRemoveController } from './controllers/product-remove.controller';
-import { ProductListAvailablesController } from './controllers/product-list-availables.controller';
-import { ProductListUnavailablesController } from './controllers/product-list-unavailables.controller';
+import { ProductListController } from './controllers/product-list.controller';
 
 import { SupplierCreate } from '@domain/use-cases/supplier-create';
 import { SupplierUpdate } from '@domain/use-cases/supplier-update';
@@ -31,8 +30,7 @@ import { CategoryList } from '@domain/use-cases/category-list';
 import { ProductCreate } from '@domain/use-cases/product-create';
 import { ProductUpdate } from '@domain/use-cases/product-update';
 import { ProductRemove } from '@domain/use-cases/product-remove';
-import { ProductListAvailables } from '@domain/use-cases/product-list-availables';
-import { ProductListUnavailables } from '@domain/use-cases/product-list-unavailables';
+import { ProductList } from '@domain/use-cases/product-list';
 
 @Module({
   imports: [DatabaseModule],
@@ -50,8 +48,7 @@ import { ProductListUnavailables } from '@domain/use-cases/product-list-unavaila
     ProductCreateController,
     ProductUpdateController,
     ProductRemoveController,
-    ProductListAvailablesController,
-    ProductListUnavailablesController,
+    ProductListController,
   ],
   providers: [
     SupplierCreate,
@@ -67,8 +64,7 @@ import { ProductListUnavailables } from '@domain/use-cases/product-list-unavaila
     ProductCreate,
     ProductUpdate,
     ProductRemove,
-    ProductListAvailables,
-    ProductListUnavailables,
+    ProductList,
   ],
 })
 export class HttpModule {}

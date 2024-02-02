@@ -14,6 +14,7 @@ interface Request {
     nrClient?: string;
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
+    onlyUnavaibles?: boolean;
   };
 }
 
@@ -22,7 +23,7 @@ interface Response {
 }
 
 @Injectable()
-export class ProductListUnavailables {
+export class ProductList {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
@@ -37,6 +38,7 @@ export class ProductListUnavailables {
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
+      onlyUnavaibles,
     } = filters;
 
     if ((dtEntryInitial && !dtEntryEnd) || (!dtEntryInitial && dtEntryEnd)) {
@@ -59,7 +61,7 @@ export class ProductListUnavailables {
         ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
         : undefined;
 
-    const products = await this.productRepository.getAllUnavailables({
+    const products = await this.productRepository.getAll({
       supplierId,
       categoryId,
       dtEntryFilter,
@@ -67,6 +69,7 @@ export class ProductListUnavailables {
       nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
+      onlyUnavaibles,
     });
     return { products };
   }

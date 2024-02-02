@@ -5,21 +5,7 @@ export abstract class ProductRepository {
   abstract getById(id: string): Promise<Product | null>;
   abstract update(productId: string, productUpdated: Product): Promise<void>;
   abstract remove(productId: string): Promise<void>;
-  abstract getAllAvailables(filters: {
-    supplierId?: string;
-    categoryId?: string;
-    dtEntryFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    dtDepartureFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-  }): Promise<Product[]>;
-  abstract getAllUnavailables(filters: {
+  abstract getAll(filters: {
     supplierId?: string;
     categoryId?: string;
     dtEntryFilter?: {
@@ -33,5 +19,6 @@ export abstract class ProductRepository {
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
     nrClient?: string;
+    onlyUnavaibles?: boolean;
   }): Promise<Product[]>;
 }

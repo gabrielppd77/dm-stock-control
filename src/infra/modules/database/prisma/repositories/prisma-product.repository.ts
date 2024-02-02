@@ -46,62 +46,7 @@ export class PrismaProductRepository implements ProductRepository {
     });
   }
 
-  async getAllAvailables(filters: {
-    supplierId?: string;
-    categoryId?: string;
-    dtEntryFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    dtDepartureFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-  }): Promise<Product[]> {
-    const {
-      supplierId,
-      categoryId,
-      dtEntryFilter,
-      dtDepartureFilter,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-    } = filters;
-
-    const products = await this.prisma.product.findMany({
-      where: {
-        supplierId,
-        categoryId,
-        dtEntry: dtEntryFilter
-          ? {
-              gte: new Date(dtEntryFilter.dtInitial),
-              lte: new Date(dtEntryFilter.dtEnd),
-            }
-          : undefined,
-        dtDeparture: dtDepartureFilter
-          ? {
-              gte: new Date(dtDepartureFilter.dtInitial),
-              lte: new Date(dtDepartureFilter.dtEnd),
-            }
-          : undefined,
-        nrClient: null,
-        fiscalNoteEntry: {
-          contains: fiscalNoteEntry,
-        },
-        fiscalNoteDeparture: {
-          contains: fiscalNoteDeparture,
-        },
-      },
-      include: {
-        supplier: true,
-        category: true,
-      },
-    });
-    return products.map((d) => PrismaProductMapper.toDomainWithIncludes(d));
-  }
-
-  async getAllUnavailables(filters: {
+  async getAll(filters: {
     supplierId?: string;
     categoryId?: string;
     dtEntryFilter?: {
@@ -115,16 +60,28 @@ export class PrismaProductRepository implements ProductRepository {
     fiscalNoteEntry?: string;
     fiscalNoteDeparture?: string;
     nrClient?: string;
+    onlyUnavaibles?: boolean;
   }): Promise<Product[]> {
     const {
       supplierId,
       categoryId,
       dtEntryFilter,
       dtDepartureFilter,
-      nrClient,
       fiscalNoteEntry,
       fiscalNoteDeparture,
+      nrClient: nrClientQuery,
+      onlyUnavaibles,
     } = filters;
+
+    let nrClient: { not?: null; contains?: string } | null = null;
+
+    if (onlyUnavaibles) {
+      nrClient = { not: null };
+    }
+
+    if (nrClientQuery) {
+      nrClient = { contains: nrClientQuery };
+    }
 
     const products = await this.prisma.product.findMany({
       where: {
@@ -142,7 +99,7 @@ export class PrismaProductRepository implements ProductRepository {
               lte: new Date(dtDepartureFilter.dtEnd),
             }
           : undefined,
-        nrClient: { not: null, contains: nrClient },
+        nrClient,
         fiscalNoteEntry: {
           contains: fiscalNoteEntry,
         },

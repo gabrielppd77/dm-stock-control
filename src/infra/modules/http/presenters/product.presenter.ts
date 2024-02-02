@@ -4,7 +4,7 @@ import {
   StatusProductLabels,
 } from '@domain/enums/status-product.enum';
 
-export class ProductAvailablesPresenter {
+export class ProductPresenter {
   id: string;
   supplierId: string;
   categoryId: string;
@@ -16,6 +16,7 @@ export class ProductAvailablesPresenter {
   measure?: string;
   dtEntry?: string;
   dtDeparture?: string;
+  nrClient?: string;
   fiscalNoteEntry?: string;
   fiscalNoteDeparture?: string;
   status: StatusProductEnum;
@@ -33,6 +34,7 @@ export class ProductAvailablesPresenter {
     this.measure = product.measure;
     this.dtEntry = product.dtEntry;
     this.dtDeparture = product.dtDeparture;
+    this.nrClient = product.nrClient;
     this.fiscalNoteEntry = product.fiscalNoteEntry;
     this.fiscalNoteDeparture = product.fiscalNoteDeparture;
     this.status = product.status;
