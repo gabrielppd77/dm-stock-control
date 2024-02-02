@@ -64,4 +64,12 @@ export class PrismaCategoryRepository implements CategoryRepository {
     const categories = await this.prisma.category.findMany();
     return categories.map((d) => PrismaCategoryMapper.toDomain(d));
   }
+
+  async countProducts(categoryId: string): Promise<number> {
+    return await this.prisma.product.count({
+      where: {
+        categoryId,
+      },
+    });
+  }
 }

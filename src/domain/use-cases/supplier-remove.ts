@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 
 import { SupplierRepository } from '@domain/repositories/supplier.repository';
 
@@ -19,6 +23,16 @@ export class SupplierRemove {
 
     if (!supplierToRemove) {
       throw new NotFoundException();
+    }
+
+    const productsCount = await this.supplierRepository.countProducts(
+      supplierId,
+    );
+
+    if (productsCount > 0) {
+      throw new ConflictException(
+        `Supplier has relation with ${productsCount} products, remove the products to remove supllier`,
+      );
     }
 
     await this.supplierRepository.remove(supplierId);

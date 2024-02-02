@@ -6,4 +6,5 @@ export abstract class CategoryRepository {
   abstract update(categoryId: string, categoryUpdated: Category): Promise<void>;
   abstract remove(categoryId: string): Promise<void>;
   abstract getAll(): Promise<Category[]>;
+  abstract countProducts(categoryId: string): Promise<number>;
 }

@@ -6,4 +6,5 @@ export abstract class SupplierRepository {
   abstract update(supplierId: string, supplierUpdated: Supplier): Promise<void>;
   abstract remove(supplierId: string): Promise<void>;
   abstract getAll(): Promise<Supplier[]>;
+  abstract countProducts(supplierId: string): Promise<number>;
 }

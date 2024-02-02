@@ -50,4 +50,12 @@ export class PrismaSupplierRepository implements SupplierRepository {
     const suppliers = await this.prisma.supplier.findMany();
     return suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
   }
+
+  async countProducts(supplierId: string): Promise<number> {
+    return await this.prisma.product.count({
+      where: {
+        supplierId,
+      },
+    });
+  }
 }
