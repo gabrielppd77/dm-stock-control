@@ -47,6 +47,20 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 
   async getAll(): Promise<Category[]> {
+    // const page = 0;
+    // const size = 10;
+    // const sort: keyof Category = 'name';
+    // const order: 'asc' | 'desc' = 'asc';
+    // const search = 'guarda';
+
+    // const categories = await this.prisma.category.findMany({
+    //   skip: page * size,
+    //   take: size,
+    //   where: { name: { contains: search, mode: 'insensitive' } },
+    //   orderBy: {
+    //     [sort]: order,
+    //   },
+    // });
     const categories = await this.prisma.category.findMany();
     return categories.map((d) => PrismaCategoryMapper.toDomain(d));
   }
