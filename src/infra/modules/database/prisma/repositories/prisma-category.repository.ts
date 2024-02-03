@@ -52,14 +52,23 @@ export class PrismaCategoryRepository implements CategoryRepository {
     // const sort: keyof Category = 'name';
     // const order: 'asc' | 'desc' = 'asc';
     // const search = 'guarda';
+    // const field: keyof Category = 'name';
+
+    // const where =
+    //   search && field
+    //     ? { [field]: { contains: search, mode: 'insensitive' } }
+    //     : undefined;
 
     // const categories = await this.prisma.category.findMany({
     //   skip: page * size,
     //   take: size,
-    //   where: { name: { contains: search, mode: 'insensitive' } },
+    //   where,
     //   orderBy: {
     //     [sort]: order,
     //   },
+    // });
+    // const total = await this.prisma.category.findMany({
+    //   where,
     // });
     const categories = await this.prisma.category.findMany();
     return categories.map((d) => PrismaCategoryMapper.toDomain(d));
