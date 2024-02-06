@@ -46,32 +46,39 @@ export class PrismaCategoryRepository implements CategoryRepository {
     });
   }
 
-  async getAll(): Promise<Category[]> {
-    // const page = 0;
-    // const size = 10;
-    // const sort: keyof Category = 'name';
-    // const order: 'asc' | 'desc' = 'asc';
-    // const search = 'guarda';
-    // const field: keyof Category = 'name';
+  async getAll(
+    page: number,
+    size: number,
+    order: 'asc' | 'desc',
+    sort?: keyof Category,
+    search?: string,
+    field?: keyof Category,
+  ): Promise<{ total: number; data: Category[] }> {
+    const where =
+      search && field
+        ? { [field]: { contains: search, mode: 'insensitive' } }
+        : undefined;
 
-    // const where =
-    //   search && field
-    //     ? { [field]: { contains: search, mode: 'insensitive' } }
-    //     : undefined;
+    const orderBy = sort
+      ? {
+          [sort]: order,
+        }
+      : undefined;
 
-    // const categories = await this.prisma.category.findMany({
-    //   skip: page * size,
-    //   take: size,
-    //   where,
-    //   orderBy: {
-    //     [sort]: order,
-    //   },
-    // });
-    // const total = await this.prisma.category.findMany({
-    //   where,
-    // });
-    const categories = await this.prisma.category.findMany();
-    return categories.map((d) => PrismaCategoryMapper.toDomain(d));
+    const categories = await this.prisma.category.findMany({
+      skip: page * size,
+      take: size,
+      where,
+      orderBy,
+    });
+    const total = await this.prisma.category.count({
+      where,
+    });
+    const data = categories.map((d) => PrismaCategoryMapper.toDomain(d));
+    return {
+      total,
+      data,
+    };
   }
 
   async countProducts(categoryId: string): Promise<number> {

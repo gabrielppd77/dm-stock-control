@@ -5,6 +5,13 @@ export abstract class CategoryRepository {
   abstract getById(id: string): Promise<Category | null>;
   abstract update(categoryId: string, categoryUpdated: Category): Promise<void>;
   abstract remove(categoryId: string): Promise<void>;
-  abstract getAll(): Promise<Category[]>;
+  abstract getAll(
+    page: number,
+    size: number,
+    order: 'asc' | 'desc',
+    sort?: keyof Category,
+    search?: string,
+    field?: keyof Category,
+  ): Promise<{ total: number; data: Category[] }>;
   abstract countProducts(categoryId: string): Promise<number>;
 }

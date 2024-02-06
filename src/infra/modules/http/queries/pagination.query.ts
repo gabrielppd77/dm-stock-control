@@ -1,21 +1,28 @@
-import { IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class PaginationQuery {
+export class PaginationQuery<DataType> {
+  @Type(() => Number)
   @IsNumber()
   page: number;
 
+  @Type(() => Number)
   @IsNumber()
   size: number;
 
   @IsString()
-  sort: string;
+  @IsOptional()
+  sort?: keyof DataType;
 
   @IsString()
-  order: 'asc' | 'desc';
+  @IsOptional()
+  order: 'asc' | 'desc' = 'asc';
 
   @IsString()
-  search: string;
+  @IsOptional()
+  search?: string;
 
   @IsString()
-  field: string;
+  @IsOptional()
+  field?: keyof DataType;
 }
