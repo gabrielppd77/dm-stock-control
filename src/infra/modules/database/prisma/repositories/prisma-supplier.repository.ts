@@ -46,9 +46,39 @@ export class PrismaSupplierRepository implements SupplierRepository {
     });
   }
 
-  async getAll(): Promise<Supplier[]> {
-    const suppliers = await this.prisma.supplier.findMany();
-    return suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
+  async getAll(
+    page: number,
+    size: number,
+    order: 'asc' | 'desc',
+    sort?: keyof Supplier,
+    search?: string,
+    field?: keyof Supplier,
+  ): Promise<{ total: number; data: Supplier[] }> {
+    const where =
+      search && field
+        ? { [field]: { contains: search, mode: 'insensitive' } }
+        : undefined;
+
+    const orderBy = sort
+      ? {
+          [sort]: order,
+        }
+      : undefined;
+
+    const suppliers = await this.prisma.supplier.findMany({
+      skip: page * size,
+      take: size,
+      where,
+      orderBy,
+    });
+    const total = await this.prisma.supplier.count({
+      where,
+    });
+    const data = suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
+    return {
+      total,
+      data,
+    };
   }
 
   async countProducts(supplierId: string): Promise<number> {
