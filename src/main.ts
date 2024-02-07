@@ -11,6 +11,8 @@ async function bootstrap() {
   SwaggerConfig.createDocument(app);
   ValidationPipeConfig.configGlobalPipes(app);
 
+  app.enableCors();
+
   await app.listen(3333);
 }
 bootstrap();
