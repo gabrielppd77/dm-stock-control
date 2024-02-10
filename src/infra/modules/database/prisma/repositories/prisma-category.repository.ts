@@ -69,7 +69,11 @@ export class PrismaCategoryRepository implements CategoryRepository {
       skip: page * size,
       take: size,
       where,
-      orderBy,
+      orderBy: orderBy
+        ? orderBy
+        : {
+            name: 'asc',
+          },
     });
     const total = await this.prisma.category.count({
       where,
