@@ -1,45 +1,21 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { ProductRepository } from '@domain/repositories/product.repository';
-import { Product } from '@domain/entities/product';
+import { ProductPresenter } from '@domain/presenters/product.presenter';
+import { PaginationPresenter } from '@domain/presenters/pagination.presenter';
+import { ProductListQuery } from '@domain/queries/product-list.query';
 
-interface Request {
-  filters: {
-    supplierId?: string;
-    categoryId?: string;
-    dtEntryInitial?: string;
-    dtEntryEnd?: string;
-    dtDepartureInitial?: string;
-    dtDepartureEnd?: string;
-    nrClient?: string;
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-    onlyUnavaibles?: boolean;
-  };
-}
+type Request = ProductListQuery;
 
-interface Response {
-  products: Product[];
-}
+type Response = PaginationPresenter<ProductPresenter[]>;
 
 @Injectable()
 export class ProductList {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { filters } = req;
-    const {
-      supplierId,
-      categoryId,
-      dtEntryInitial,
-      dtEntryEnd,
-      dtDepartureInitial,
-      dtDepartureEnd,
-      nrClient,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-      onlyUnavaibles,
-    } = filters;
+    const { dtEntryInitial, dtEntryEnd, dtDepartureInitial, dtDepartureEnd } =
+      req;
 
     if ((dtEntryInitial && !dtEntryEnd) || (!dtEntryInitial && dtEntryEnd)) {
       throw new BadRequestException('Date entry filter has incomplent');
@@ -52,25 +28,16 @@ export class ProductList {
       throw new BadRequestException('Date departure filter has incomplent');
     }
 
-    const dtEntryFilter =
-      dtEntryInitial && dtEntryEnd
-        ? { dtInitial: dtEntryInitial, dtEnd: dtEntryEnd }
-        : undefined;
-    const dtDepartureFilter =
-      dtDepartureInitial && dtDepartureEnd
-        ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
-        : undefined;
+    const products = await this.productRepository.getByQuery(req);
+    const total = await this.productRepository.countByQuery(req);
 
-    const products = await this.productRepository.getAll({
-      supplierId,
-      categoryId,
-      dtEntryFilter,
-      dtDepartureFilter,
-      nrClient,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-      onlyUnavaibles,
-    });
-    return { products };
+    const productsPresenter = products.map((d) => new ProductPresenter(d));
+
+    return new PaginationPresenter(
+      productsPresenter,
+      total,
+      req.size,
+      req.page,
+    );
   }
 }

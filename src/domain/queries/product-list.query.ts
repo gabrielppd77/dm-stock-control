@@ -1,13 +1,10 @@
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsDateString,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsBoolean, IsDateString, IsOptional, IsUUID } from 'class-validator';
 
-export class ProductListQuery {
+import { PaginationQuery } from './pagination.query';
+import { ProductPresenter } from '@domain/presenters/product.presenter';
+
+export class ProductListQuery extends PaginationQuery<ProductPresenter> {
   @IsUUID()
   @IsOptional()
   supplierId?: string;
@@ -31,18 +28,6 @@ export class ProductListQuery {
   @IsDateString()
   @IsOptional()
   dtDepartureEnd?: string;
-
-  @IsOptional()
-  @IsString()
-  nrClient?: string;
-
-  @IsOptional()
-  @IsString()
-  fiscalNoteEntry?: string;
-
-  @IsOptional()
-  @IsString()
-  fiscalNoteDeparture?: string;
 
   @IsOptional()
   @IsBoolean()

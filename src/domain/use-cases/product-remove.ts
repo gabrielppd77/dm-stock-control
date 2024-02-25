@@ -2,9 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { ProductRepository } from '@domain/repositories/product.repository';
 
-interface Request {
-  productId: string;
-}
+type Request = string;
 
 type Response = void;
 
@@ -12,15 +10,13 @@ type Response = void;
 export class ProductRemove {
   constructor(private productRepository: ProductRepository) {}
 
-  async execute(req: Request): Promise<Response> {
-    const { productId } = req;
-
-    const productToRemove = await this.productRepository.getById(productId);
+  async execute(id: Request): Promise<Response> {
+    const productToRemove = await this.productRepository.getById(id);
 
     if (!productToRemove) {
       throw new NotFoundException();
     }
 
-    await this.productRepository.remove(productId);
+    await this.productRepository.remove(id);
   }
 }

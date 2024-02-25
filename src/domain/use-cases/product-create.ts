@@ -4,22 +4,11 @@ import { UniqueEntityID } from '@core/common/entities/unique-entity-id';
 
 import { Product } from '@domain/entities/product';
 import { ProductRepository } from '@domain/repositories/product.repository';
+import { ProductCreateDTO } from '@domain/dtos/product-create.dto';
 
 interface Request {
   replicate: number;
-  fields: {
-    supplierId: string;
-    categoryId: string;
-    name: string;
-    color?: string;
-    fabric?: string;
-    measure?: string;
-    dtEntry?: string;
-    dtDeparture?: string;
-    nrClient?: string;
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-  };
+  data: ProductCreateDTO;
 }
 
 type Response = void;
@@ -29,20 +18,7 @@ export class ProductCreate {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { replicate, fields } = req;
-    const {
-      supplierId,
-      categoryId,
-      name,
-      color,
-      fabric,
-      measure,
-      dtEntry,
-      dtDeparture,
-      nrClient,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-    } = fields;
+    const { replicate, data } = req;
 
     if (replicate > 100) {
       throw new BadRequestException(
@@ -55,17 +31,17 @@ export class ProductCreate {
     for (let index = 0; index < replicate; index++) {
       products.push(
         new Product({
-          supplierId: new UniqueEntityID(supplierId),
-          categoryId: new UniqueEntityID(categoryId),
-          name,
-          color,
-          fabric,
-          measure,
-          dtEntry,
-          dtDeparture,
-          nrClient,
-          fiscalNoteEntry,
-          fiscalNoteDeparture,
+          supplierId: new UniqueEntityID(data.supplierId),
+          categoryId: new UniqueEntityID(data.categoryId),
+          name: data.name,
+          color: data.color,
+          fabric: data.fabric,
+          measure: data.measure,
+          dtEntry: data.dtEntry,
+          dtDeparture: data.dtDeparture,
+          nrClient: data.nrClient,
+          fiscalNoteEntry: data.fiscalNoteEntry,
+          fiscalNoteDeparture: data.fiscalNoteDeparture,
         }),
       );
     }

@@ -4,6 +4,7 @@ import { PrismaService } from '@infra/modules/database/prisma/prisma.service';
 import { ProductRepository } from '@domain/repositories/product.repository';
 import { Product } from '@domain/entities/product';
 import { PrismaProductMapper } from '../mappers/prisma-product-mapper';
+import { ProductListQuery } from '@domain/queries/product-list.query';
 
 @Injectable()
 export class PrismaProductRepository implements ProductRepository {
@@ -46,32 +47,25 @@ export class PrismaProductRepository implements ProductRepository {
     });
   }
 
-  async getAll(filters: {
-    supplierId?: string;
-    categoryId?: string;
-    dtEntryFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    dtDepartureFilter?: {
-      dtInitial: string;
-      dtEnd: string;
-    };
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-    nrClient?: string;
-    onlyUnavaibles?: boolean;
-  }): Promise<Product[]> {
+  async getByQuery(query: ProductListQuery): Promise<Product[]> {
     const {
       supplierId,
       categoryId,
-      dtEntryFilter,
-      dtDepartureFilter,
-      fiscalNoteEntry,
-      fiscalNoteDeparture,
-      nrClient: nrClientQuery,
+      dtEntryInitial,
+      dtEntryEnd,
+      dtDepartureInitial,
+      dtDepartureEnd,
       onlyUnavaibles,
-    } = filters;
+    } = query;
+
+    const dtEntryFilter =
+      dtEntryInitial && dtEntryEnd
+        ? { dtInitial: dtEntryInitial, dtEnd: dtEntryEnd }
+        : undefined;
+    const dtDepartureFilter =
+      dtDepartureInitial && dtDepartureEnd
+        ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
+        : undefined;
 
     let nrClient: { not?: null; contains?: string } | null = null;
 
@@ -100,12 +94,6 @@ export class PrismaProductRepository implements ProductRepository {
             }
           : undefined,
         nrClient,
-        fiscalNoteEntry: {
-          contains: fiscalNoteEntry,
-        },
-        fiscalNoteDeparture: {
-          contains: fiscalNoteDeparture,
-        },
       },
       include: {
         supplier: true,

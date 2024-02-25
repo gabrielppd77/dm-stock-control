@@ -7,9 +7,7 @@ export class ProductRemoveController {
   constructor(private productRemove: ProductRemove) {}
 
   @Delete(':id')
-  async handle(@Param('id') productId: string) {
-    await this.productRemove.execute({
-      productId,
-    });
+  async handle(@Param('id') id: string) {
+    await this.productRemove.execute(id);
   }
 }

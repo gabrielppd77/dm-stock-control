@@ -27,8 +27,8 @@ export class ProductPresenter {
     this.supplierId = product.supplierId.toValue();
     this.categoryId = product.categoryId.toValue();
     this.name = product.name;
-    this.supplierName = product.supplier?.name || 'supplier';
-    this.categoryName = product.category?.name || 'category';
+    this.supplierName = product.supplier?.name || 'Fornecedor';
+    this.categoryName = product.category?.name || 'Categoria';
     this.color = product.color;
     this.fabric = product.fabric;
     this.measure = product.measure;

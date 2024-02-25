@@ -2,22 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { ProductRepository } from '@domain/repositories/product.repository';
 
-import { StatusProductEnum } from '@domain/enums/status-product.enum';
+import { ProductUpdateDTO } from '@domain/dtos/product-update.dto';
 
 interface Request {
-  productId: string;
-  fields: {
-    name: string;
-    color?: string;
-    fabric?: string;
-    measure?: string;
-    dtEntry?: string;
-    dtDeparture?: string;
-    nrClient?: string;
-    fiscalNoteEntry?: string;
-    fiscalNoteDeparture?: string;
-    status: StatusProductEnum;
-  };
+  id: string;
+  data: ProductUpdateDTO;
 }
 
 type Response = void;
@@ -27,25 +16,25 @@ export class ProductUpdate {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { productId, fields } = req;
+    const { id, data } = req;
 
-    const productToUpdate = await this.productRepository.getById(productId);
+    const productToUpdate = await this.productRepository.getById(id);
 
     if (!productToUpdate) {
       throw new NotFoundException();
     }
 
-    productToUpdate.name = fields.name;
-    productToUpdate.color = fields.color;
-    productToUpdate.fabric = fields.fabric;
-    productToUpdate.measure = fields.measure;
-    productToUpdate.dtEntry = fields.dtEntry;
-    productToUpdate.dtDeparture = fields.dtDeparture;
-    productToUpdate.nrClient = fields.nrClient;
-    productToUpdate.fiscalNoteEntry = fields.fiscalNoteEntry;
-    productToUpdate.fiscalNoteDeparture = fields.fiscalNoteDeparture;
-    productToUpdate.status = fields.status;
+    productToUpdate.name = data.name;
+    productToUpdate.color = data.color;
+    productToUpdate.fabric = data.fabric;
+    productToUpdate.measure = data.measure;
+    productToUpdate.dtEntry = data.dtEntry;
+    productToUpdate.dtDeparture = data.dtDeparture;
+    productToUpdate.nrClient = data.nrClient;
+    productToUpdate.fiscalNoteEntry = data.fiscalNoteEntry;
+    productToUpdate.fiscalNoteDeparture = data.fiscalNoteDeparture;
+    productToUpdate.status = data.status;
 
-    await this.productRepository.update(productId, productToUpdate);
+    await this.productRepository.update(id, productToUpdate);
   }
 }

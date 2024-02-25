@@ -5,8 +5,9 @@ import { ApiResponse } from '@nestjs/swagger';
 import { ProductList } from '@domain/use-cases/product-list';
 import { ExcelGenerator } from '@core/helpers/excel-generator';
 
-import { ProductPresenter } from '../presenters/product.presenter';
-import { ProductListQuery } from '../queries/product-list.query';
+import { ProductPresenter } from '../../../../domain/presenters/product.presenter';
+import { ProductListQuery } from '../../../../domain/queries/product-list.query';
+import { PaginationPresenter } from '@domain/presenters/pagination.presenter';
 
 @Controller('/products')
 export class ProductListController {
@@ -15,16 +16,8 @@ export class ProductListController {
   @Get()
   async handle(
     @Query() queries: ProductListQuery,
-  ): Promise<ProductPresenter[]> {
-    const { products } = await this.productList.execute({
-      filters: queries,
-    });
-
-    const productsFormated = products.map<ProductPresenter>(
-      (d) => new ProductPresenter(d),
-    );
-
-    return productsFormated;
+  ): Promise<PaginationPresenter<ProductPresenter[]>> {
+    return await this.productList.execute(queries);
   }
 
   @ApiResponse({
@@ -39,13 +32,7 @@ export class ProductListController {
     @Res() res: Response,
     @Query() queries: ProductListQuery,
   ): Promise<Response<any, Record<string, any>>> {
-    const { products } = await this.productList.execute({
-      filters: queries,
-    });
-
-    const productsFormated = products.map<ProductPresenter>(
-      (d) => new ProductPresenter(d),
-    );
+    const { data } = await this.productList.execute(queries);
 
     const titleFile = 'produtos';
 
@@ -65,7 +52,7 @@ export class ProductListController {
         { header: 'NF Saída', key: 'fiscalNoteDeparture', width: 20 },
         { header: 'Status', key: 'statusName', width: 20 },
       ],
-      data: productsFormated,
+      data,
     });
 
     const buffer = await excelGenerator.writeBuffer();
