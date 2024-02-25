@@ -7,9 +7,7 @@ export class CategoryRemoveController {
   constructor(private categoryRemove: CategoryRemove) {}
 
   @Delete(':id')
-  async handle(@Param('id') categoryId: string) {
-    await this.categoryRemove.execute({
-      categoryId,
-    });
+  async handle(@Param('id') id: string) {
+    await this.categoryRemove.execute(id);
   }
 }

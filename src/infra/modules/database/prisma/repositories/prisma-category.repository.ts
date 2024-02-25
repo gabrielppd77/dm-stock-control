@@ -4,6 +4,8 @@ import { PrismaService } from '@infra/modules/database/prisma/prisma.service';
 import { CategoryRepository } from '@domain/repositories/category.repository';
 import { Category } from '@domain/entities/category';
 import { PrismaCategoryMapper } from '../mappers/prisma-category-mapper';
+import { PaginationQuery } from '@domain/queries/pagination.query';
+import { CategoryPresenter } from '@domain/presenters/category.presenter';
 
 @Injectable()
 export class PrismaCategoryRepository implements CategoryRepository {
@@ -46,43 +48,39 @@ export class PrismaCategoryRepository implements CategoryRepository {
     });
   }
 
-  async getAll(
-    page: number,
-    size: number,
-    order: 'asc' | 'desc',
-    sort?: keyof Category,
-    search?: string,
-    field?: keyof Category,
-  ): Promise<{ total: number; data: Category[] }> {
-    const where =
-      search && field
-        ? { [field]: { contains: search, mode: 'insensitive' } }
-        : undefined;
-
-    const orderBy = sort
-      ? {
-          [sort]: order,
-        }
-      : undefined;
+  async getByQuery(
+    query: PaginationQuery<CategoryPresenter>,
+  ): Promise<Category[]> {
+    const { search, field, sort, order, page, size } = query;
 
     const categories = await this.prisma.category.findMany({
       skip: page * size,
       take: size,
-      where,
-      orderBy: orderBy
-        ? orderBy
+      where:
+        search && field
+          ? { [field]: { contains: search, mode: 'insensitive' } }
+          : undefined,
+      orderBy: sort
+        ? {
+            [sort]: order,
+          }
         : {
             name: 'asc',
           },
     });
-    const total = await this.prisma.category.count({
-      where,
+    return categories.map((d) => PrismaCategoryMapper.toDomain(d));
+  }
+
+  async countByQuery(
+    query: PaginationQuery<CategoryPresenter>,
+  ): Promise<number> {
+    const { search, field } = query;
+    return await this.prisma.category.count({
+      where:
+        search && field
+          ? { [field]: { contains: search, mode: 'insensitive' } }
+          : undefined,
     });
-    const data = categories.map((d) => PrismaCategoryMapper.toDomain(d));
-    return {
-      total,
-      data,
-    };
   }
 
   async countProducts(categoryId: string): Promise<number> {

@@ -1,36 +1,29 @@
 import { Injectable } from '@nestjs/common';
 
 import { SupplierRepository } from '@domain/repositories/supplier.repository';
-import { Supplier } from '@domain/entities/supplier';
+import { PaginationQuery } from '@domain/queries/pagination.query';
+import { SupplierPresenter } from '@domain/presenters/supplier.presenter';
+import { PaginationPresenter } from '@domain/presenters/pagination.presenter';
 
-interface Request {
-  page: number;
-  size: number;
-  order: 'asc' | 'desc';
-  sort?: keyof Supplier;
-  search?: string;
-  field?: keyof Supplier;
-}
+type Request = PaginationQuery<SupplierPresenter>;
 
-interface Response {
-  data: Supplier[];
-  total: number;
-}
+type Response = PaginationPresenter<SupplierPresenter[]>;
 
 @Injectable()
 export class SupplierList {
   constructor(private supplierRepository: SupplierRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { page, size, sort, order, search, field } = req;
-    const { data, total } = await this.supplierRepository.getAll(
-      page,
-      size,
-      order,
-      sort,
-      search,
-      field,
+    const suppliers = await this.supplierRepository.getByQuery(req);
+    const total = await this.supplierRepository.countByQuery(req);
+
+    const suppliersPresenters = suppliers.map((d) => new SupplierPresenter(d));
+
+    return new PaginationPresenter(
+      suppliersPresenters,
+      total,
+      req.size,
+      req.page,
     );
-    return { data, total };
   }
 }

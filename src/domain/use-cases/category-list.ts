@@ -1,37 +1,30 @@
 import { Injectable } from '@nestjs/common';
 
 import { CategoryRepository } from '@domain/repositories/category.repository';
-import { Category } from '@domain/entities/category';
+import { PaginationQuery } from '@domain/queries/pagination.query';
+import { CategoryPresenter } from '@domain/presenters/category.presenter';
+import { PaginationPresenter } from '@domain/presenters/pagination.presenter';
 
-interface Request {
-  page: number;
-  size: number;
-  order: 'asc' | 'desc';
-  sort?: keyof Category;
-  search?: string;
-  field?: keyof Category;
-}
-
-interface Response {
-  data: Category[];
-  total: number;
-}
+type Request = PaginationQuery<CategoryPresenter>;
+type Response = PaginationPresenter<CategoryPresenter[]>;
 
 @Injectable()
 export class CategoryList {
   constructor(private categoryRepository: CategoryRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { page, size, sort, order, search, field } = req;
+    const categories = await this.categoryRepository.getByQuery(req);
+    const total = await this.categoryRepository.countByQuery(req);
 
-    const { data, total } = await this.categoryRepository.getAll(
-      page,
-      size,
-      order,
-      sort,
-      search,
-      field,
+    const categoriesPresenters = categories.map(
+      (d) => new CategoryPresenter(d),
     );
-    return { data, total };
+
+    return new PaginationPresenter(
+      categoriesPresenters,
+      total,
+      req.size,
+      req.page,
+    );
   }
 }

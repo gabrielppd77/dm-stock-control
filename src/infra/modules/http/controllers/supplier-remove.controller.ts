@@ -7,9 +7,7 @@ export class SupplierRemoveController {
   constructor(private supplierRemove: SupplierRemove) {}
 
   @Delete(':id')
-  async handle(@Param('id') supplierId: string) {
-    await this.supplierRemove.execute({
-      supplierId,
-    });
+  async handle(@Param('id') id: string) {
+    await this.supplierRemove.execute(id);
   }
 }

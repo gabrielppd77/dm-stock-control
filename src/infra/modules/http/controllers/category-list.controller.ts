@@ -2,9 +2,9 @@ import { Controller, Get, Query } from '@nestjs/common';
 
 import { CategoryList } from '@domain/use-cases/category-list';
 
-import { CategoryPresenter } from '../presenters/category.presenter';
-import { PaginationPresenter } from '../presenters/pagination.presenter';
-import { PaginationQuery } from '../queries/pagination.query';
+import { CategoryPresenter } from '../../../../domain/presenters/category.presenter';
+import { PaginationPresenter } from '../../../../domain/presenters/pagination.presenter';
+import { PaginationQuery } from '../../../../domain/queries/pagination.query';
 
 @Controller('/categories')
 export class CategoryListController {
@@ -14,21 +14,6 @@ export class CategoryListController {
   async handle(
     @Query() queries: PaginationQuery<CategoryPresenter>,
   ): Promise<PaginationPresenter<CategoryPresenter[]>> {
-    const { page, size, sort, order, search, field } = queries;
-
-    const { data, total } = await this.categoryList.execute({
-      page,
-      size,
-      order,
-      sort,
-      search,
-      field,
-    });
-
-    const categoriesFormated = data.map<CategoryPresenter>(
-      (d) => new CategoryPresenter(d),
-    );
-
-    return new PaginationPresenter(categoriesFormated, total, size, page);
+    return await this.categoryList.execute(queries);
   }
 }

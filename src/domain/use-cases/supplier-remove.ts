@@ -6,9 +6,7 @@ import {
 
 import { SupplierRepository } from '@domain/repositories/supplier.repository';
 
-interface Request {
-  supplierId: string;
-}
+type Request = string;
 
 type Response = void;
 
@@ -16,18 +14,14 @@ type Response = void;
 export class SupplierRemove {
   constructor(private supplierRepository: SupplierRepository) {}
 
-  async execute(req: Request): Promise<Response> {
-    const { supplierId } = req;
-
-    const supplierToRemove = await this.supplierRepository.getById(supplierId);
+  async execute(id: Request): Promise<Response> {
+    const supplierToRemove = await this.supplierRepository.getById(id);
 
     if (!supplierToRemove) {
       throw new NotFoundException();
     }
 
-    const productsCount = await this.supplierRepository.countProducts(
-      supplierId,
-    );
+    const productsCount = await this.supplierRepository.countProducts(id);
 
     if (productsCount > 0) {
       throw new ConflictException(
@@ -35,6 +29,6 @@ export class SupplierRemove {
       );
     }
 
-    await this.supplierRepository.remove(supplierId);
+    await this.supplierRepository.remove(id);
   }
 }

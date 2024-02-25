@@ -4,6 +4,8 @@ import { PrismaService } from '@infra/modules/database/prisma/prisma.service';
 import { SupplierRepository } from '@domain/repositories/supplier.repository';
 import { Supplier } from '@domain/entities/supplier';
 import { PrismaSupplierMapper } from '../mappers/prisma-supplier-mapper';
+import { PaginationQuery } from '@domain/queries/pagination.query';
+import { SupplierPresenter } from '@domain/presenters/supplier.presenter';
 
 @Injectable()
 export class PrismaSupplierRepository implements SupplierRepository {
@@ -46,43 +48,39 @@ export class PrismaSupplierRepository implements SupplierRepository {
     });
   }
 
-  async getAll(
-    page: number,
-    size: number,
-    order: 'asc' | 'desc',
-    sort?: keyof Supplier,
-    search?: string,
-    field?: keyof Supplier,
-  ): Promise<{ total: number; data: Supplier[] }> {
-    const where =
-      search && field
-        ? { [field]: { contains: search, mode: 'insensitive' } }
-        : undefined;
-
-    const orderBy = sort
-      ? {
-          [sort]: order,
-        }
-      : undefined;
+  async getByQuery(
+    query: PaginationQuery<SupplierPresenter>,
+  ): Promise<Supplier[]> {
+    const { search, field, sort, order, page, size } = query;
 
     const suppliers = await this.prisma.supplier.findMany({
       skip: page * size,
       take: size,
-      where,
-      orderBy: orderBy
-        ? orderBy
+      where:
+        search && field
+          ? { [field]: { contains: search, mode: 'insensitive' } }
+          : undefined,
+      orderBy: sort
+        ? {
+            [sort]: order,
+          }
         : {
             name: 'asc',
           },
     });
-    const total = await this.prisma.supplier.count({
-      where,
+    return suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
+  }
+
+  async countByQuery(
+    query: PaginationQuery<SupplierPresenter>,
+  ): Promise<number> {
+    const { search, field } = query;
+    return await this.prisma.supplier.count({
+      where:
+        search && field
+          ? { [field]: { contains: search, mode: 'insensitive' } }
+          : undefined,
     });
-    const data = suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
-    return {
-      total,
-      data,
-    };
   }
 
   async countProducts(supplierId: string): Promise<number> {

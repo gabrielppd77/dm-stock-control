@@ -6,9 +6,7 @@ import {
 
 import { CategoryRepository } from '@domain/repositories/category.repository';
 
-interface Request {
-  categoryId: string;
-}
+type Request = string;
 
 type Response = void;
 
@@ -16,18 +14,14 @@ type Response = void;
 export class CategoryRemove {
   constructor(private categoryRepository: CategoryRepository) {}
 
-  async execute(req: Request): Promise<Response> {
-    const { categoryId } = req;
-
-    const categoryToRemove = await this.categoryRepository.getById(categoryId);
+  async execute(id: Request): Promise<Response> {
+    const categoryToRemove = await this.categoryRepository.getById(id);
 
     if (!categoryToRemove) {
       throw new NotFoundException();
     }
 
-    const productsCount = await this.categoryRepository.countProducts(
-      categoryId,
-    );
+    const productsCount = await this.categoryRepository.countProducts(id);
 
     if (productsCount > 0) {
       throw new ConflictException(
@@ -35,6 +29,6 @@ export class CategoryRemove {
       );
     }
 
-    await this.categoryRepository.remove(categoryId);
+    await this.categoryRepository.remove(id);
   }
 }

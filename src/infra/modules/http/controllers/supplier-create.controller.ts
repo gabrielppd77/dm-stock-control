@@ -2,7 +2,7 @@ import { Controller, Body, Post } from '@nestjs/common';
 
 import { SupplierCreate } from '@domain/use-cases/supplier-create';
 
-import { SupplierCreateDTO } from '../dtos/supplier-create.dto';
+import { SupplierCreateDTO } from '../../../../domain/dtos/supplier-create.dto';
 
 @Controller('/suppliers')
 export class SupplierCreateController {
@@ -10,10 +10,6 @@ export class SupplierCreateController {
 
   @Post()
   async handle(@Body() body: SupplierCreateDTO) {
-    const { name } = body;
-
-    await this.supplierCreate.execute({
-      name,
-    });
+    await this.supplierCreate.execute(body);
   }
 }

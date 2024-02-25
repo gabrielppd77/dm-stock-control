@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { Supplier } from '@domain/entities/supplier';
 import { SupplierRepository } from '@domain/repositories/supplier.repository';
+import { SupplierCreateDTO } from '@domain/dtos/supplier-create.dto';
 
-interface Request {
-  name: string;
-}
+type Request = SupplierCreateDTO;
 
 type Response = void;
 

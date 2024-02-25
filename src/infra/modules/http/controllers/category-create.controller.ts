@@ -2,7 +2,7 @@ import { Controller, Body, Post } from '@nestjs/common';
 
 import { CategoryCreate } from '@domain/use-cases/category-create';
 
-import { CategoryCreateDTO } from '../dtos/category-create.dto';
+import { CategoryCreateDTO } from '../../../../domain/dtos/category-create.dto';
 
 @Controller('/categories')
 export class CategoryCreateController {
@@ -10,10 +10,6 @@ export class CategoryCreateController {
 
   @Post()
   async handle(@Body() body: CategoryCreateDTO) {
-    const { name } = body;
-
-    await this.categoryCreate.execute({
-      name,
-    });
+    await this.categoryCreate.execute(body);
   }
 }

@@ -2,22 +2,17 @@ import { Controller, Body, Put, Param } from '@nestjs/common';
 
 import { CategoryUpdate } from '@domain/use-cases/category-update';
 
-import { CategoryUpdateDTO } from '../dtos/category-update.dto';
+import { CategoryUpdateDTO } from '../../../../domain/dtos/category-update.dto';
 
 @Controller('/categories')
 export class CategoryUpdateController {
   constructor(private categoryUpdate: CategoryUpdate) {}
 
   @Put(':id')
-  async handle(
-    @Body() body: CategoryUpdateDTO,
-    @Param('id') categoryId: string,
-  ) {
-    const { name } = body;
-
+  async handle(@Body() body: CategoryUpdateDTO, @Param('id') id: string) {
     await this.categoryUpdate.execute({
-      categoryId,
-      fields: { name },
+      id,
+      data: body,
     });
   }
 }

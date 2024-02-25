@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { Category } from '@domain/entities/category';
 import { CategoryRepository } from '@domain/repositories/category.repository';
+import { CategoryCreateDTO } from '@domain/dtos/category-create.dto';
 
-interface Request {
-  name: string;
-}
+type Request = CategoryCreateDTO;
 
 type Response = void;
 

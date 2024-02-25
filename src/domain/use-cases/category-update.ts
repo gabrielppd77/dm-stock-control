@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CategoryRepository } from '@domain/repositories/category.repository';
+import { CategoryUpdateDTO } from '@domain/dtos/category-update.dto';
 
 interface Request {
-  categoryId: string;
-  fields: {
-    name: string;
-  };
+  id: string;
+  data: CategoryUpdateDTO;
 }
 
 type Response = void;
@@ -16,16 +15,16 @@ export class CategoryUpdate {
   constructor(private categoryRepository: CategoryRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    const { categoryId, fields } = req;
+    const { id, data } = req;
 
-    const categoryToUpdate = await this.categoryRepository.getById(categoryId);
+    const categoryToUpdate = await this.categoryRepository.getById(id);
 
     if (!categoryToUpdate) {
       throw new NotFoundException();
     }
 
-    categoryToUpdate.name = fields.name;
+    categoryToUpdate.name = data.name;
 
-    await this.categoryRepository.update(categoryId, categoryToUpdate);
+    await this.categoryRepository.update(id, categoryToUpdate);
   }
 }
