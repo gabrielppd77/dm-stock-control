@@ -56,6 +56,13 @@ export class PrismaProductRepository implements ProductRepository {
       dtDepartureInitial,
       dtDepartureEnd,
       onlyUnavaibles,
+
+      search,
+      field,
+      sort,
+      order,
+      page,
+      size,
     } = query;
 
     const dtEntryFilter =
@@ -66,16 +73,6 @@ export class PrismaProductRepository implements ProductRepository {
       dtDepartureInitial && dtDepartureEnd
         ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
         : undefined;
-
-    let nrClient: { not?: null; contains?: string } | null = null;
-
-    if (onlyUnavaibles) {
-      nrClient = { not: null };
-    }
-
-    if (nrClientQuery) {
-      nrClient = { contains: nrClientQuery };
-    }
 
     const products = await this.prisma.product.findMany({
       where: {
@@ -93,13 +90,77 @@ export class PrismaProductRepository implements ProductRepository {
               lte: new Date(dtDepartureFilter.dtEnd),
             }
           : undefined,
-        nrClient,
+        nrClient: onlyUnavaibles ? { not: null } : null,
+        AND: [
+          search && field
+            ? { [field]: { contains: search, mode: 'insensitive' } }
+            : {},
+        ],
       },
+      skip: page * size,
+      take: size,
+      orderBy: sort
+        ? {
+            [sort]: order,
+          }
+        : {
+            name: 'asc',
+          },
       include: {
         supplier: true,
         category: true,
       },
     });
+
     return products.map((d) => PrismaProductMapper.toDomainWithIncludes(d));
+  }
+
+  async countByQuery(query: ProductListQuery): Promise<number> {
+    const {
+      supplierId,
+      categoryId,
+      dtEntryInitial,
+      dtEntryEnd,
+      dtDepartureInitial,
+      dtDepartureEnd,
+      onlyUnavaibles,
+
+      search,
+      field,
+    } = query;
+
+    const dtEntryFilter =
+      dtEntryInitial && dtEntryEnd
+        ? { dtInitial: dtEntryInitial, dtEnd: dtEntryEnd }
+        : undefined;
+    const dtDepartureFilter =
+      dtDepartureInitial && dtDepartureEnd
+        ? { dtInitial: dtDepartureInitial, dtEnd: dtDepartureEnd }
+        : undefined;
+
+    return await this.prisma.product.count({
+      where: {
+        supplierId,
+        categoryId,
+        dtEntry: dtEntryFilter
+          ? {
+              gte: new Date(dtEntryFilter.dtInitial),
+              lte: new Date(dtEntryFilter.dtEnd),
+            }
+          : undefined,
+        dtDeparture: dtDepartureFilter
+          ? {
+              gte: new Date(dtDepartureFilter.dtInitial),
+              lte: new Date(dtDepartureFilter.dtEnd),
+            }
+          : undefined,
+        nrClient: onlyUnavaibles ? { not: null } : null,
+        AND: [
+          search && field
+            ? { [field]: { contains: search, mode: 'insensitive' } }
+            : {},
+        ],
+      },
+    });
   }
 }

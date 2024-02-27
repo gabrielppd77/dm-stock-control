@@ -11,10 +11,11 @@ export class PageOptionsPresenter {
 
     this.length = total;
     this.size = size;
-    this.lastPage = Math.ceil(total / size) - 1;
+    this.lastPage = total > 0 ? Math.ceil(total / size) - 1 : total;
     this.page = page;
     this.startIndex = page * size;
-    this.endIndex = auxEndIndex >= total ? total - 1 : auxEndIndex;
+    this.endIndex =
+      total > 0 ? (auxEndIndex >= total ? total - 1 : auxEndIndex) : total;
   }
 }
 
