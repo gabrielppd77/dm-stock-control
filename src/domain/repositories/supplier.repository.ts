@@ -1,6 +1,7 @@
 import { Supplier } from '@domain/entities/supplier';
 import { SupplierPresenter } from '@domain/presenters/supplier.presenter';
 import { PaginationQuery } from '@domain/queries/pagination.query';
+import { SimpleSearchQuery } from '@domain/queries/simple-search.query';
 
 export abstract class SupplierRepository {
   abstract create(supplier: Supplier): Promise<void>;
@@ -14,4 +15,7 @@ export abstract class SupplierRepository {
     query: PaginationQuery<SupplierPresenter>,
   ): Promise<number>;
   abstract countProducts(supplierId: string): Promise<number>;
+  abstract getByQuerySearch(
+    query: SimpleSearchQuery<SupplierPresenter>,
+  ): Promise<Supplier[]>;
 }

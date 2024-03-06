@@ -6,6 +6,7 @@ import { Category } from '@domain/entities/category';
 import { PrismaCategoryMapper } from '../mappers/prisma-category-mapper';
 import { PaginationQuery } from '@domain/queries/pagination.query';
 import { CategoryPresenter } from '@domain/presenters/category.presenter';
+import { SimpleSearchQuery } from '@domain/queries/simple-search.query';
 
 @Injectable()
 export class PrismaCategoryRepository implements CategoryRepository {
@@ -89,5 +90,16 @@ export class PrismaCategoryRepository implements CategoryRepository {
         categoryId,
       },
     });
+  }
+
+  async getByQuerySearch(
+    query: SimpleSearchQuery<CategoryPresenter>,
+  ): Promise<Category[]> {
+    const { search, field } = query;
+    const categories = await this.prisma.category.findMany({
+      take: 20,
+      where: { [field]: { contains: search, mode: 'insensitive' } },
+    });
+    return categories.map((d) => PrismaCategoryMapper.toDomain(d));
   }
 }

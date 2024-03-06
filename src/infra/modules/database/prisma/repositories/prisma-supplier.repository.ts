@@ -6,6 +6,7 @@ import { Supplier } from '@domain/entities/supplier';
 import { PrismaSupplierMapper } from '../mappers/prisma-supplier-mapper';
 import { PaginationQuery } from '@domain/queries/pagination.query';
 import { SupplierPresenter } from '@domain/presenters/supplier.presenter';
+import { SimpleSearchQuery } from '@domain/queries/simple-search.query';
 
 @Injectable()
 export class PrismaSupplierRepository implements SupplierRepository {
@@ -89,5 +90,16 @@ export class PrismaSupplierRepository implements SupplierRepository {
         supplierId,
       },
     });
+  }
+
+  async getByQuerySearch(
+    query: SimpleSearchQuery<SupplierPresenter>,
+  ): Promise<Supplier[]> {
+    const { search, field } = query;
+    const suppliers = await this.prisma.supplier.findMany({
+      take: 20,
+      where: { [field]: { contains: search, mode: 'insensitive' } },
+    });
+    return suppliers.map((d) => PrismaSupplierMapper.toDomain(d));
   }
 }

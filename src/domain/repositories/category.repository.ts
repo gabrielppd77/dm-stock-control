@@ -1,6 +1,7 @@
 import { Category } from '@domain/entities/category';
 import { CategoryPresenter } from '@domain/presenters/category.presenter';
 import { PaginationQuery } from '@domain/queries/pagination.query';
+import { SimpleSearchQuery } from '@domain/queries/simple-search.query';
 
 export abstract class CategoryRepository {
   abstract create(category: Category): Promise<void>;
@@ -14,4 +15,7 @@ export abstract class CategoryRepository {
     query: PaginationQuery<CategoryPresenter>,
   ): Promise<number>;
   abstract countProducts(categoryId: string): Promise<number>;
+  abstract getByQuerySearch(
+    query: SimpleSearchQuery<CategoryPresenter>,
+  ): Promise<Category[]>;
 }
