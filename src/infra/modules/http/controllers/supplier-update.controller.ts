@@ -2,7 +2,7 @@ import { Controller, Body, Put, Param } from '@nestjs/common';
 
 import { SupplierUpdate } from '@domain/use-cases/supplier-update';
 
-import { SupplierUpdateDTO } from '../../../../domain/dtos/supplier-update.dto';
+import { SupplierUpdateDTO } from '../../../../core/dtos/supplier-update.dto';
 
 @Controller('/suppliers')
 export class SupplierUpdateController {

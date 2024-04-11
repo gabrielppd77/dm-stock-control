@@ -2,8 +2,8 @@ import { Controller, Post, Body, Query } from '@nestjs/common';
 
 import { ProductCreate } from '@domain/use-cases/product-create';
 
-import { ProductCreateDTO } from '../../../../domain/dtos/product-create.dto';
-import { ProductCreateQuery } from '../../../../domain/queries/product-create.query';
+import { ProductCreateDTO } from '../../../../core/dtos/product-create.dto';
+import { ProductCreateQuery } from '../../../../core/queries/product-create.query';
 
 @Controller('/products')
 export class ProductCreateController {

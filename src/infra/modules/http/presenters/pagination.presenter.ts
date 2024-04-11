@@ -19,11 +19,11 @@ export class PageOptionsPresenter {
   }
 }
 
-export class PaginationPresenter<DataType> {
-  readonly data: DataType;
+export class PaginationPresenter {
+  readonly data: any[];
   readonly pagination: PageOptionsPresenter;
 
-  constructor(data: DataType, total: number, size: number, page: number) {
+  constructor(data: any[], total: number, size: number, page: number) {
     this.data = data;
     this.pagination = new PageOptionsPresenter(total, size, page);
   }

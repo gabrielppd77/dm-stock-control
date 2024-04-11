@@ -11,12 +11,10 @@ export class ProductRemove {
   constructor(private productRepository: ProductRepository) {}
 
   async execute(id: Request): Promise<Response> {
-    const productToRemove = await this.productRepository.getById(id);
-
-    if (!productToRemove) {
-      throw new NotFoundException();
-    }
-
-    await this.productRepository.remove(id);
+    // const productToRemove = await this.productRepository.getById(id);
+    // if (!productToRemove) {
+    //   throw new NotFoundException();
+    // }
+    // await this.productRepository.remove(id);
   }
 }

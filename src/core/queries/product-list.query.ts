@@ -2,9 +2,9 @@ import { Transform } from 'class-transformer';
 import { IsBoolean, IsDateString, IsOptional, IsUUID } from 'class-validator';
 
 import { PaginationQuery } from './pagination.query';
-import { ProductPresenter } from '@domain/presenters/product.presenter';
+import { ProductPresenter } from '@infra/modules/http/presenters/product.presenter';
 
-export class ProductListQuery extends PaginationQuery<ProductPresenter> {
+export class ProductListQuery extends PaginationQuery {
   @IsUUID()
   @IsOptional()
   supplierId?: string;

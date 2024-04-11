@@ -1,9 +1,8 @@
 import { IsString } from 'class-validator';
 
-export class SimpleSearchQuery<DataType> {
+export class SearchFieldQuery {
   @IsString()
   search: string;
-
   @IsString()
-  field: keyof DataType;
+  field: string;
 }

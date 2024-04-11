@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class PaginationQuery<DataType> {
+export class PaginationQuery {
   @Type(() => Number)
   @IsNumber()
   page: number;
@@ -12,7 +12,7 @@ export class PaginationQuery<DataType> {
 
   @IsString()
   @IsOptional()
-  sort?: keyof DataType;
+  sort?: string;
 
   @IsString()
   @IsOptional()
@@ -24,5 +24,5 @@ export class PaginationQuery<DataType> {
 
   @IsString()
   @IsOptional()
-  field?: keyof DataType;
+  field?: string;
 }

@@ -6,15 +6,11 @@ import {
 
 import { CategoryRepository } from '@domain/repositories/category.repository';
 
-type Request = string;
-
-type Response = void;
-
 @Injectable()
 export class CategoryRemove {
   constructor(private categoryRepository: CategoryRepository) {}
 
-  async execute(id: Request): Promise<Response> {
+  async execute(id: string): Promise<void> {
     const categoryToRemove = await this.categoryRepository.getById(id);
 
     if (!categoryToRemove) {
@@ -25,7 +21,7 @@ export class CategoryRemove {
 
     if (productsCount > 0) {
       throw new ConflictException(
-        `Category has relation with ${productsCount} products, remove the products to remove category`,
+        `Categoria tem relação com ${productsCount} produtos, remova os produtos para remover a categoria`,
       );
     }
 
