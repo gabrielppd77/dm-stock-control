@@ -15,12 +15,16 @@ export class SupplierUpdate {
   constructor(private supplierRepository: SupplierRepository) {}
 
   async execute(req: Request): Promise<Response> {
-    // const { id, data } = req;
-    // const supplierToUpdate = await this.supplierRepository.getById(id);
-    // if (!supplierToUpdate) {
-    //   throw new NotFoundException();
-    // }
-    // supplierToUpdate.name = data.name;
-    // await this.supplierRepository.update(id, supplierToUpdate);
+    const { id, data } = req;
+
+    const supplierToUpdate = await this.supplierRepository.getById(id);
+
+    if (!supplierToUpdate) {
+      throw new NotFoundException();
+    }
+
+    supplierToUpdate.name = data.name;
+
+    await this.supplierRepository.update(id, supplierToUpdate);
   }
 }
